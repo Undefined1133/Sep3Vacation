@@ -1,0 +1,48 @@
+﻿@page "/EditUserRole/{id:int}"
+@using Sep3Vacation.Data
+@using Sep3Vacation.Models
+@inject IUserService UserService
+@inject NavigationManager _navigationManager
+<h3>EditUserRole</h3>
+@if (_userToEdit == null)
+{
+    <em>User not found!</em>
+}
+
+else
+{
+    <EditForm Model="@_userToEdit" OnValidSubmit="@Save">
+        <DataAnnotationsValidator/>
+        @* <ValidationSummary/> *@
+     
+           <div class="form-group">
+                    Role:<br/>
+                    <InputTextArea rows="4" @bind-Value="_userToEdit.role"/>
+                </div>
+                
+
+        <p class="actions">
+            <button class="btn btn-outline-dark" type="submit">Save</button>
+        </p>
+        </EditForm>
+        }
+        
+@code {
+    [Parameter]
+    public int id { get; set; }
+    
+    
+    private User _userToEdit;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _userToEdit = await UserService.GetUserById(id);
+
+    }
+    private async Task Save()
+    {
+        await UserService.UpdateUsersRole(_userToEdit);
+        _navigationManager.NavigateTo("/ManageUsersRole");
+    }
+}

@@ -1,0 +1,62 @@
+﻿@page "/Edit/{Id:int}"
+@using Sep3Vacation.Models
+@using Sep3Vacation.Data
+@inject IPackagesService _packagesService
+@inject NavigationManager NavMgr
+
+<h3>Edit</h3>
+@if (packageToEdit == null)
+{
+    <em>Package not found!</em>
+}
+
+else
+{
+    <EditForm Model="@packageToEdit" OnValidSubmit="@Save">
+        <DataAnnotationsValidator/>
+        @* <ValidationSummary/> *@
+
+        <div class="form-group">
+            Name:<br/>
+            <InputTextArea rows="4" @bind-Value="packageToEdit.Name"/>
+        </div>
+        <div class="form-group">
+            Location:<br/>
+            <InputTextArea rows="4" @bind-Value="packageToEdit.Location"/>
+        </div>
+        <div class="form-group">
+            Price:<br/>
+            <InputNumber rows="4" @bind-Value="packageToEdit.Price"/>
+        </div>
+        <div class="form-group">
+            Review:<br/>
+            <InputNumber rows="4" @bind-Value="packageToEdit.Review"/>
+        </div>
+
+        <p class="actions">
+            <button class="btn btn-outline-dark" type="submit">Save</button>
+        </p>
+    </EditForm>
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Package packageToEdit;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        packageToEdit = await _packagesService.GetPackageAsync(Id);
+
+    }
+
+    private async Task Save()
+    {
+        await _packagesService.UpdatePackageAsync(packageToEdit);
+        NavMgr.NavigateTo("/Packages");
+    }
+
+}    
+}

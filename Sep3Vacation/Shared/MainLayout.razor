@@ -1,0 +1,65 @@
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@using LoginComponent
+@using Sep3Vacation.Authentication
+
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu/>
+    </div>
+    
+    <div class="main">
+        <div class="top-row px-4">
+            
+                       
+        </div>
+   
+
+    
+         @* <footer > *@
+         @*     <div class ="footer-content"> *@
+         @*                        <ul class="socials"> *@
+         @*                            <li><a href="#"> <img src="Images/icons8-facebook-100.png" asp-append-version="true"   alt="Facebook Icon"></a></li> *@
+         @*                            <li><a href="#"><img src="Images/icons8-instagram-100.png" asp-append-version="true"  alt="Instagram Icon"></a></li> *@
+         @*                            <li><a href="#"> <img src="Images/icons8-twitter-100.png" asp-append-version="true"  alt="Twitter Icon"></a></li> *@
+         @*                            <li><a href="#"> <i class=""></i></a></li> *@
+         @*                            <li><a href="#"> <i class=""></i></a></li> *@
+         @*                        </ul> *@
+         @*                        <ul class="text_info_footer"> *@
+         @*                            <li>Contact us Here</li> *@
+         @*                            <li>Contact us Here</li> *@
+         @*                            <li>Contact us Here</li> *@
+         @*                            <li>Contact us Here</li> *@
+         @* *@
+         @*                        </ul> *@
+         @*                    </div> *@
+         @*               *@
+         @*                </footer> *@
+        <div class="content px-4">
+            @Body
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+@code{
+
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthStat { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var user = (await AuthStat).User;
+        if (!user.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo($"/Login");
+    // NavigationManager.NavigateTo($"/Login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+        }
+    }
+
+
+}

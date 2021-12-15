@@ -1,0 +1,47 @@
+﻿@page "/MyProfile"
+@using Sep3Vacation.Data
+@using Sep3Vacation.Models
+@using Sep3Vacation.Authentication
+@inject IUserService _userService
+@inject IBoughtPackages _boughtPackagesService
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject NavigationManager _navigationManager
+@attribute [Authorize]
+<h3>MyProfile</h3>
+<ListGroup Flush="true">
+    <ListGroupItem>@_currentUser.id</ListGroupItem>
+    <ListGroupItem>@_currentUser.username</ListGroupItem>
+    <ListGroupItem>@_currentUser.Email </ListGroupItem>
+    <ListGroupItem>@_currentUser.role </ListGroupItem>
+    @if (_packageBoughtByThisUser == null)
+    {
+        <ListGroupItem Disabled="true">No bought packages</ListGroupItem>
+    }else{
+        <ListGroupItem>@_packageBoughtByThisUser.BoughtPackageId</ListGroupItem>
+    }
+</ListGroup>
+
+<button class="mdc-button mdc-button--raised" @onclick="@(e=> Edit(_currentUser.id))">
+    <span class="mdc-button__label">Edit information</span>
+</button>
+@code {
+
+    private User _currentUser = new();
+    private string _usersName = "";
+    private List<BoughtPackage> _boughtPackages = new List<BoughtPackage>();
+    private BoughtPackage _packageBoughtByThisUser = new BoughtPackage();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _usersName = ((CustomAuthenticationStateProvider)_authenticationStateProvider).GetAuthenticationStateAsync().Result.User.Identity?.Name;
+         _currentUser =await _userService.GetUserByUserName(_usersName);
+        _boughtPackages = await _boughtPackagesService.GetBoughtPackagesAsync();
+        _packageBoughtByThisUser = _boughtPackages.FirstOrDefault(p => p.UserId == _currentUser.id);
+
+    }
+    
+    private void Edit(int id)
+    {
+        _navigationManager.NavigateTo($"EditUserInfoMyProfile/{id}");
+    }
+}

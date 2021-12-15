@@ -1,0 +1,8 @@
+﻿<StaticWebAssets Version="1.0">
+  <ContentRoot BasePath="_content/Blazorise" Path="C:\Users\cooln\.nuget\packages\blazorise\0.9.5.2\build\..\staticwebassets\" />
+  <ContentRoot BasePath="_content/Blazorise.Bootstrap" Path="C:\Users\cooln\.nuget\packages\blazorise.bootstrap\0.9.5.2\build\..\staticwebassets\" />
+  <ContentRoot BasePath="_content/Blazorise.Icons.Material" Path="C:\Users\cooln\.nuget\packages\blazorise.icons.material\0.9.5.2\build\..\staticwebassets\" />
+  <ContentRoot BasePath="_content/Blazorise.Material" Path="C:\Users\cooln\.nuget\packages\blazorise.material\0.9.5.2\build\..\staticwebassets\" />
+  <ContentRoot BasePath="_content/MatBlazor" Path="C:\Users\cooln\.nuget\packages\matblazor\2.9.0-develop-042\build\..\staticwebassets\" />
+  <ContentRoot BasePath="/" Path="C:\Users\cooln\RiderProjects\Sep3Vacation\Sep3Vacation\obj\Debug\net5.0\scopedcss\bundle\" />
+</StaticWebAssets>

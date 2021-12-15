@@ -1,0 +1,83 @@
+﻿@page "/Registration"
+@using Sep3Vacation.Data
+@using Sep3Vacation.Models
+@inject ICryptoService _cryptoService 
+@inject IUserService UserService
+@inject NavigationManager _navigationManager
+<h3>Registration</h3>
+<Button Color="Color.Primary" Clicked="HandleClick"> Click me</Button>
+<Modal @ref="_modalRef">
+    <ModalContent Size="ModalSize.Large" Centered="true">
+        <ModalHeader>
+            <ModalTitle>
+                <Icon Name="IconName.Add"/>
+                Register
+            </ModalTitle>
+            <CloseButton/>
+        </ModalHeader>
+        <ModalBody>
+            <Validations Mode="ValidationMode.Manual" @ref="_validations">
+                <Field  >
+                    <FieldLabel>Username</FieldLabel>
+                    <TextEdit @bind-Text="@_username" Autofocus="true" Placeholder="Enter username..."></TextEdit>
+                </Field >
+                <Field >
+                    <FieldLabel>Password</FieldLabel>
+                    <TextEdit @bind-Text="@_password" Role="TextRole.Password"   Placeholder="Enter last password..."></TextEdit>
+                </Field>
+                <Validation Validator="@ValidationRule.IsEmail">
+                    <Field>
+                        <FieldLabel>Email</FieldLabel>
+                        <TextEdit @bind-Text="@_email" Placeholder="Enter email...">
+                            <Feedback>
+                                <ValidationError>Invalid email</ValidationError>
+                                <ValidationSuccess>Good email</ValidationSuccess>
+                            </Feedback>
+                        </TextEdit>
+
+                    </Field>
+                </Validation>
+            </Validations>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="HideModal">Close</Button>
+            <Button Color="Color.Primary" Clicked="Register">Register</Button>
+
+        </ModalFooter>
+    </ModalContent>
+
+</Modal>
+@code {
+    private Modal _modalRef;
+    private string _email;
+    private string _password;
+    private string _username;
+    private Validations _validations;
+    private string toBeEncripted;
+    private string toBeDecripted;
+
+    private void HandleClick()
+    {
+        _modalRef.Show();
+    }
+
+    private void HideModal()
+    {
+        _modalRef.Hide();
+    }
+
+    private async Task Register()
+    {
+        if (_validations.ValidateAll().Result)
+        {
+
+            await UserService.ValidateRegister(_username, _password, _email);
+            
+                HideModal();
+                await _validations.ClearAll();
+                _navigationManager.NavigateTo("/Login");
+
+        }
+    }
+    
+}

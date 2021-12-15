@@ -1,0 +1,48 @@
+﻿@page "/AddPackages"
+@using Sep3Vacation.Data
+@using Sep3Vacation.Models
+@using Microsoft.AspNetCore.Components
+@inject IPackagesService _packagesService;
+@inject NavigationManager _navigationManager;
+@attribute [Authorize(Policy = "RoleAdmin")]
+<h3>AddPackages</h3>
+<EditForm Model="@_package" OnValidSubmit="@AddNewPackage">
+    <div class="form-group">
+            Id:<br/>
+            <InputNumber rows="4" @bind-Value="_package.ID"/>
+        </div>
+    <div class="form-group">
+        Name:<br/>
+        <InputTextArea @bind-Value="_package.Name"/>
+    </div>
+    <div class="form-group">
+        Location:<br/>
+        <InputTextArea rows="4" @bind-Value="_package.Location"/>
+    </div>
+    <div class="form-group">
+        Price:<br/>
+        <InputNumber rows="4" @bind-Value="_package.Price"/>
+    </div>
+    <div class="form-group">
+        Review:<br/>
+        <InputNumber rows="4" @bind-Value="_package.Review"/>
+    </div>
+
+
+    <p class="actions">
+        <button class="btn btn-outline-dark" type="submit">Create</button>
+    </p>
+
+</EditForm>
+@code {
+    private Package _package = new Package();
+    
+    
+    private async Task AddNewPackage()
+    {   
+        
+        await _packagesService.AddPackageAsync(_package);
+        _navigationManager.NavigateTo("/Packages");
+    }
+
+}

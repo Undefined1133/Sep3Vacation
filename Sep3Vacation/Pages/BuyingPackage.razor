@@ -1,0 +1,70 @@
+﻿@page "/BuyingPackage/{Id:int}"
+@using _Imports = MatBlazor._Imports
+@using Sep3Vacation.Data
+@using Sep3Vacation.Models
+@using Sep3Vacation.Authentication
+@inject IBoughtPackages _boughtPackages
+@inject IPackagesService _packagesService
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject IUserService _userService
+@attribute [Authorize]
+<h3>BuyingPackage </h3>
+<div class="box">
+<p>
+    <MatDatePicker @bind-Value="@Date1"></MatDatePicker>
+</p>
+<MatButton OnClick="@(_ => { Date1 = DateTime.Now; })">
+    Now
+</MatButton>
+<MatButton OnClick="@(_ => { Date1 = null; })">
+    Empty
+</MatButton>
+<span>@(Date1.HasValue ? Date1.Value.ToLocalTime().ToString():"")</span>
+</div>
+
+<button class="mdc-button mdc-button--raised">
+    Choose
+</button>
+<div class="box">
+    <p>
+        <MatDatePicker @bind-Value="@Date2"></MatDatePicker>
+    </p>
+    <MatButton OnClick="@(_ => { Date2 = DateTime.Now; })">
+        Now
+    </MatButton>
+    <MatButton OnClick="@(_ => { Date2 = null; })">
+        Empty
+    </MatButton>
+    <span>@(Date2.HasValue ? Date2.Value.ToLocalTime().ToString():"")</span>
+    </div>
+    
+    <button class="mdc-button mdc-button--raised">
+        Choose
+    </button>
+ <button class="mdc-button mdc-button--raised" @onclick="@(Buy)">
+        Buy Package
+    </button>
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private DateTime? Date1 { get; set; } = DateTime.Now.AddDays(-10);
+    private DateTime? Date2 { get; set; } = DateTime.Now.AddDays(-10);
+    private Package _packageToBuy;
+    private BoughtPackage _boughtPackage;
+    private int _userId;
+    private string _usersName;
+    protected override async Task OnInitializedAsync()
+    {
+        _packageToBuy = await _packagesService.GetPackageAsync(Id);
+
+    }
+    private async Task Buy()
+    {
+        _usersName =((CustomAuthenticationStateProvider)_authenticationStateProvider).GetAuthenticationStateAsync().Result.User.Identity?.Name;
+        User user =await _userService.GetUserByUserName(_usersName);
+        _userId = user.id;
+        _boughtPackage = new BoughtPackage(1, _userId, _packageToBuy.ID);
+        await _boughtPackages.AddBoughtPackageAsync(_boughtPackage);
+    }
+}

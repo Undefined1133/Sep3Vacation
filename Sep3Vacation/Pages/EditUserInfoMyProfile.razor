@@ -1,0 +1,78 @@
+﻿@page "/EditUserInfoMyProfile/{Id:int}"
+@using Microsoft.AspNetCore.Components
+@using Sep3Vacation.Authentication
+@using Sep3Vacation.Data
+@using Sep3Vacation.Models
+@inject IUserService UserService
+@inject NavigationManager _navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<h3>EditUserInfoMyProfile</h3>
+@if (_userToEdit == null)
+{
+    <em>User not found!</em>
+}
+
+else
+{
+    <EditForm Model="@_userToEdit" OnValidSubmit="@Save">
+        <DataAnnotationsValidator/>
+        @* <ValidationSummary/> *@
+        <div class="form-group">
+            UserName:<br/>
+            <InputTextArea rows="4" @bind-Value="_userToEdit.username"/>
+        </div>
+        <div class="form-group">
+            Password:<br/>
+            <InputText type="password" rows="4" @bind-Value="_userToEdit.password"/>
+        </div>
+        <div class="form-group">
+            Email:<br/>
+            <InputTextArea rows="4" @bind-Value="_userToEdit.Email"/>
+        </div>
+
+
+        <p class="actions">
+            <button class="btn btn-outline-dark" type="submit">Save</button>
+        </p>
+        <ListGroup Flush="true">
+        <ListGroupItem Name="danger" Color="Color.Danger">Careful, you will be logged off!!! </ListGroupItem>
+         </ListGroup>
+    </EditForm>
+   
+}
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+
+    private User _userToEdit;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _userToEdit = await UserService.GetUserById(Id);
+    }
+
+    private async Task Save()
+    {
+        await UserService.UpdateUsersInfo( new User()
+        {
+            id = Id,
+            username = _userToEdit.username,
+            password = _userToEdit.password,
+            Email = _userToEdit.Email,
+            role = ""
+        });
+        await PerformLogout();
+    }
+
+    private async Task PerformLogout() {
+        try {
+            ((CustomAuthenticationStateProvider)AuthenticationStateProvider).Logout();
+            _navigationManager.NavigateTo("/");
+        } catch (Exception e) { }
+    }
+
+}
